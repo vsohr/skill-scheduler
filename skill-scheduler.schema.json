@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Skill Scheduler Configuration",
+  "description": "Configuration for the Claude Code skill scheduler",
+  "type": "object",
+  "required": ["skills"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Path to this schema file for editor validation"
+    },
+    "skills": {
+      "type": "array",
+      "description": "List of skills to schedule",
+      "items": {
+        "type": "object",
+        "required": ["name", "prompt", "schedule"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for the skill (used in logs and --run-now)"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "The prompt to send to Claude CLI (e.g., '/my-skill do the thing')"
+          },
+          "schedule": {
+            "type": "object",
+            "description": "When to run the skill",
+            "required": ["type"],
+            "oneOf": [
+              {
+                "properties": {
+                  "type": { "const": "daily" },
+                  "at": {
+                    "type": "string",
+                    "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$",
+                    "description": "Time of day to run (HH:MM format, 24-hour)"
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "default": "UTC",
+                    "description": "Timezone (e.g., 'UTC', 'America/New_York')"
+                  }
+                },
+                "required": ["type", "at"]
+              },
+              {
+                "properties": {
+                  "type": { "const": "interval" },
+                  "hours": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "description": "Hours between executions"
+                  }
+                },
+                "required": ["type", "hours"]
+              },
+              {
+                "properties": {
+                  "type": { "const": "cron" },
+                  "expression": {
+                    "type": "string",
+                    "description": "Cron expression (e.g., '0 8 * * *' for daily at 8am)"
+                  }
+                },
+                "required": ["type", "expression"]
+              }
+            ]
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether this skill is enabled (default: true)"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Optional human-readable note about this skill"
+          }
+        }
+      }
+    }
+  }
+}

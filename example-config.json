@@ -1,0 +1,43 @@
+{
+  "$schema": "./skill-scheduler.schema.json",
+  "skills": [
+    {
+      "name": "daily-report",
+      "prompt": "/generate-daily-report",
+      "schedule": {
+        "type": "daily",
+        "at": "8:00",
+        "timezone": "UTC"
+      },
+      "comment": "Generate a daily report every morning at 8am UTC"
+    },
+    {
+      "name": "periodic-health-check",
+      "prompt": "/health-check run diagnostics",
+      "schedule": {
+        "type": "interval",
+        "hours": 6
+      },
+      "comment": "Run health checks every 6 hours"
+    },
+    {
+      "name": "weekly-summary",
+      "prompt": "/weekly-summary",
+      "schedule": {
+        "type": "cron",
+        "expression": "0 9 * * 1"
+      },
+      "comment": "Generate weekly summary every Monday at 9am"
+    },
+    {
+      "name": "disabled-example",
+      "prompt": "/some-skill",
+      "enabled": false,
+      "schedule": {
+        "type": "daily",
+        "at": "12:00"
+      },
+      "comment": "This skill is disabled and won't run"
+    }
+  ]
+}
